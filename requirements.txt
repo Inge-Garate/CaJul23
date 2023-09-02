@@ -7,4 +7,5 @@ SQLAlchemy==2.0.19
 Werkzeug==2.2.3
 WTForms==3.0.1
 pymysql
+email_validator
 gunicorn
