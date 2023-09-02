@@ -1,0 +1,24 @@
+{% macro get_week_data(week_data, week_key) %}
+  {{ week_data }}
+  {{ week_key }}
+  {% set datetime = namespace(now=datetime) %}
+  {% for empleado_data in week_data[week_key] %}
+    {% if empleado_data['nombre'] not in displayed_empleados %}
+      {% set _ = displayed_empleados.add(empleado_data['nombre']) %}
+      <tr>
+        <td>{{ empleado_data['nombre']}} {{ empleado_data['apellido_p']}}</td>
+        {% for day in weekdays %}
+          <td>
+            {% set matching_data = week_data[week_key] | selectattr('fecha', 'equalto', week_key[0] + macros.timedelta(days=weekdays.index(day))) | selectattr('nombre', 'equalto', empleado_data['nombre']) | list %}
+            {% if matching_data|length > 0 %}
+              {% set attendance = matching_data[0]['boolean_asistencia'] %}
+              {% if attendance == 'si' %}
+                ✓
+              {% endif %}
+            {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
+    {% endif %}
+  {% endfor %}
+{% endmacro %}

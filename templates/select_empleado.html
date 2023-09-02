@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="text-center mt-2 mb-4"><label>Selecciona un trabajador:</label></h2>
+      <form class="text-center mt-2 mb-4" method="POST">
+        <select name="id_empleado" id="id_empleado" class="form-select" aria-label="Default select example" title="Selecciona un trabajador">
+        {% for row in empleados%}
+        <option value="{{row.id_empleado}}">{{row.nombre}} {{row.apellido_p}} {{row.apellido_m}}</option>
+        {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Seleccionar">
+      </form>
+      <script>
+        $(document).ready(function (){
+          $("#id_empleado").selectpicker();
+        });
+      </script>
+    </div>
+  </div>
+</div>
+{% endblock %}

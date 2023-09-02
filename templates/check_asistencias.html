@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center mt-2 mb-4">Reporte de Asistencias por semana en: {{nombre_obra}}</h2>
+</div>
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-pb0m{border-color:inherit;text-align:center;vertical-align:bottom}
+.tg .tg-6pz6{background-color:#FFF;border-color:inherit;color:#202122;text-align:center;vertical-align:top}
+.tg .tg-2o05{background-color:#385fcf;border-color:inherit;color:#ffffff;font-weight:bold;text-align:center;vertical-align:bottom}
+.tg .tg-za14{border-color:inherit;text-align:left;vertical-align:bottom}
+.tg .tg-zeks{background-color:#FFF;border-color:inherit;color:#202122;text-align:center;vertical-align:bottom}
+</style>
+
+{% if week_data %}
+  {% set weekdays = ["Sabado", "Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes"] %}
+  {% for week_range, semana_data in week_data %}
+    {% if semana_data %}
+      {% set week_key = week_range %}
+      <div class="text-center">
+        <h3 class="mt-2 mb-4">Semana #{{ loop.index }}: {{ week_key[0].strftime('%d %b %Y') }} - {{ week_key[1].strftime('%d %b %Y') }}</h3>
+      </div>
+      <table class="tg mx-auto">
+        <!-- Table headers -->
+        <thead>
+          <tr>
+            <th class="tg-2o05"><span style="font-weight:bold">EMPLEADO</span></th>
+            {% for day in weekdays %}
+              <th class="tg-2o05"><span style="font-weight:bold">{{ day }}<br>{{ (week_key[0] + timedelta(days=weekdays.index(day))).strftime('%d') }}</span></th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% set displayed_empleados = set() %}
+          {% for empleado_data in semana_data %}
+            {% if (empleado_data['nombre'], empleado_data['apellido_p']) not in displayed_empleados %}
+              {% set _ = displayed_empleados.add((empleado_data['nombre'], empleado_data['apellido_p'])) %}
+              <tr>
+                <td>{{ empleado_data['nombre'] }} {{ empleado_data['apellido_p'] }}</td>
+                {% for day in weekdays %}
+                  <td class="tg-6pz6">
+                    {% set matching_data = semana_data | selectattr('fecha', 'equalto', week_key[0] + timedelta(days=weekdays.index(day))) | selectattr('nombre', 'equalto', empleado_data['nombre']) | selectattr('apellido_p', 'equalto', empleado_data['apellido_p']) | list %}
+                    {% if matching_data|length > 0 %}
+                      {% set attendance = matching_data[0]['boolean_asistencia'] %}
+                      {% if attendance == 'si' %}
+                        ✓
+                      {% endif %}
+                    {% endif %}
+                  </td>
+                {% endfor %}
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% else %}
+  <p class="text-center">No data available for the selected obra.</p>
+{% endif %}
+{% endblock %}

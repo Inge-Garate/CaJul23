@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+  .custom-calendar {
+    width: 80%; /* Adjust the width as needed */
+    margin: 0 auto; /* Center the calendar horizontally */
+    max-height: 600px; /* Adjust the max-height as needed */
+    overflow: auto; /* Enable vertical scrolling if necessary */
+  }
+</style>
+
+<h2 class="text-center mt-2 mb-4">Vista Mensual de Asistencias de {{nombre_empleado}}</h2>
+
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1/index.global.min.js'></script>
+
+    <div id="calendar" class="custom-calendar"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var calendarEl = document.getElementById('calendar');
+          // Use the asistencias data to create event objects  
+          var events = [
+                {% for asistencia in asistencias %}
+            {
+                "title": "{{ asistencia.nombre_obra }}",
+                "start": "{{ asistencia.fecha.strftime('%Y-%m-%d') }}T00:00:00"
+            },
+            {% endfor %}
+            ];
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                events: events,
+                displayEventTime: false
+                // Other configuration options
+            });
+
+            calendar.render();
+        });
+    </script>
+
+{% endblock %}

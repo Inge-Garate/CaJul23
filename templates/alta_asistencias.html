@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center mt-2 mb-4">Captura de Asistencias en: {{nombre_obra}}</h2>
+  <form class="form" method="POST">
+    {# This hidden_tag is a CSRF security feature. #}
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+      {{ form.id_obra(value=id_obra) }} {# Add id_obra as a hidden field #}
+      {{ form.id_contrato.label(class="form-label") }}
+      <select name="id_contrato" id="id_contrato" class="form-select" aria-label="Default select example" title="Selecciona un contrato">
+      {% for row in contratos%}
+      <option value="{{ row.id_contrato }}">{{ row.nombre_contrato }}</option>
+      {% endfor %}
+      </select><br>
+      {{ form.id_empleado.label(class="form-label") }} 
+      <select name="id_empleado" id="id_empleado" class="form-select" multiple>
+      {% for empleado in empleados %}
+      <option value="{{ empleado.id_empleado }}">{{ empleado.empleado }}</option>
+      {% endfor %}
+      </select><br>
+      {{ form.fecha.label(class="form-label") }} {{ form.fecha(class="form-control") }}<br>
+      {{ form.boolean_asistencia.label(class="form-label") }} {{ form.boolean_asistencia(class="form-control") }}<br>
+      {{ form.notas.label(class="form-label") }} {{ form.notas(class="form-control") }}<br>
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+    {{ form.errors }}
+  </form>
+</div>
+{% endblock %}

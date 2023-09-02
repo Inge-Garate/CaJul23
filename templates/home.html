@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="text-center mt-2 mb-4">Vista General de {{nombre_obra}}</h2>
+      <div>
+        
+        <div class="accordion" id="accordionExample"> 
+          
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseZero" aria-expanded="false" aria-controls="collapseZero"><strong>CONTRATOS DE OBRA: {{"${:,.2f}".format(monto_contratos)}} más IVA</strong>
+              </button>
+            </h2>
+            <div id="collapseZero" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <table id="table_contratos" class="table table-dark table-hover">
+                  <thead>
+                    <tr>
+                    <th scope="col">Id contrato</th>
+                    <th scope="col">Contrato</th>
+                    <th scope="col">Monto neto</th>
+                    <th scope="col">Status</th>
+                    </tr>                   
+                  </thead>
+                  {% for contrato in contratos %}
+                  {% include 'contratos.html' %}
+                  {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#estimaciones" aria-expanded="false" aria-controls="estimaciones"><strong>ESTIMACIONES COBRADAS: {{"${:,.2f}".format(monto_estimaciones)}} más IVA<br>FONDOS DE GARANTIA {{"${:,.2f}".format(monto_fg)}} más IVA</strong>
+              </button>
+            </h2>
+            <div id="estimaciones" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <table id="table_contratos" class="table table-dark table-hover">
+                  <thead>
+                    <tr>
+                    <th scope="col">ESTIMACION</th>
+                    <th scope="col">NOTAS</th>
+                    <th scope="col">MONTO SIN IVA</th>
+                    <th scope="col">FONDO DE GARANTIA</th>
+                    </tr>                   
+                  </thead>
+                  {% for estimacion in estimaciones %}
+                  {% include 'estimaciones.html' %}
+                  {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">TRABAJADORES QUE HAN ESTADO EN OBRA
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <table id="table_trabajadores" class="table table-dark table-hover">
+                  <thead>
+                    <tr>
+                    <th scope="col">Id empl.</th>
+                    <th scope="col">Nombre</th>
+                    </tr>                   
+                  </thead>
+                  {% for trabajador in trabajadores %}
+                  {% include 'trabajadores.html' %}
+                  {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"> ASISTENCIAS
+              </button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+
+                <ul class="nav nav-tabs">  
+                  <li class="nav-item">
+                    <a class="nav-link active" href="{{ url_for('alta_asistencias', id_obra=id_obra, nombre_obra=nombre_obra) }}">Registrar Asistencias</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('modifica_asistencias') }}">Modificar Asistencias</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('check_asistencias', id_obra=id_obra, nombre_obra=nombre_obra) }}">Asistencias Semanal</a>
+                  </li>
+                </ul>
+                
+                <table id="table_asistencias" class="table table-dark table-hover">
+                  <thead>
+                    <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">id_asist.</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellido</th>
+                    <th scope="col">notas</th>
+                    </tr>                   
+                  </thead>
+                  {% for asistencia in asistencias %}
+                  {% include 'asistencia.html' %}
+                  {% endfor %}
+                </table>        
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"><strong>GASTOS: {{"${:,.2f}".format(monto_gastos)}}</strong>
+              </button>
+            </h2>
+            <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                <table class="table table-dark table-hover">
+                  <thead>
+                    <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">id_gasto</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Concepto</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Monto Neto</th>
+                    <th scope="col">¿factura?</th>
+                    <th scope="col">Pagado por:</th>
+                    </tr>
+                  </thead>
+                  {% for gasto in gastos %}
+                  {% include 'gasto.html' %}
+                  {% endfor %}
+                </table>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>  
+    </div>
+  </body>
+</html>
+{% endblock %}
