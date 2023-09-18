@@ -2,11 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from db import engine, load_obras_from_db, load_asistencias_from_db, load_gastos_from_db, load_nombre_obra_from_db, load_trabajadores_from_db, load_contratos_from_db, load_monto_gastos_from_db, load_monto_contratos_from_db, load_dropdwn_contratos_from_db, load_asistencias_sem_from_db, load_asistencias_empleado_from_db, load_workers_from_db, load_nombre_empleado_from_db, load_estimaciones_from_db, load_monto_est_from_db, load_monto_fg_from_db
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin
+from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin, current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 from forms import LoginForm, RegistrationForm, RegistroAsistenciaForm
 from datetime import timedelta, date
 from collections import defaultdict
+from datetime import datetime
+from sqlalchemy.orm import relationship
 import os
 
 # Create a login manager object
@@ -75,6 +77,11 @@ class Asistencias(db.Model):
     fecha = db.Column(db.Date, unique=False)
     boolean_asistencia = db.Column(db.String(2), unique=False)
     notas = db.Column(db.Text, unique=False)
+    upload_datetime = db.Column(db.DateTime, default=datetime.utcnow)
+    # Define a foreign key relationship to the User model
+    user_email = db.Column(db.String(64), db.ForeignKey('users.email'))
+    # Create a relationship with the User model
+    user = relationship('User', foreign_keys=[user_email])
   
     def __init__(self, id_obra, id_contrato, id_empleado, fecha, boolean_asistencia, notas):
         self.id_obra = id_obra
@@ -202,6 +209,7 @@ def alta_asistencias():
   form.id_obra.data = id_obra
 
   if form.validate_on_submit():
+      user_email = current_user.email
       id_contrato = form.id_contrato.data
       fecha = form.fecha.data
       boolean_asistencia = form.boolean_asistencia.data
@@ -216,6 +224,10 @@ def alta_asistencias():
               fecha=fecha,
               boolean_asistencia=boolean_asistencia,
               notas=notas)
+        
+          # Set the user_email after creating the instance
+          asistencia.user_email = user_email
+        
           db.session.add(asistencia)
       db.session.commit()
       flash('Asistencias registradas')

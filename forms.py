@@ -24,10 +24,10 @@ def validate_username(self, username):
             raise ValidationError('Este nombre de usuario ya ha sido registrado')
 
 class RegistroAsistenciaForm(FlaskForm):
-    id_obra = HiddenField('id_obra', validators=[DataRequired()])
-    id_contrato = SelectField('id_contrato', coerce=int, validators=[DataRequired()])
-    id_empleado = SelectMultipleField('id_empleado', coerce=int, validators=[DataRequired()])
-    fecha = DateField('fecha', validators=[DataRequired()])
-    boolean_asistencia = SelectField('boolean_asistencia', validators=[DataRequired()], choices=[("si", 'Si'), ("no", 'No')])
-    notas = StringField('notas')   
+    id_obra = HiddenField('id_obra', validators=[DataRequired()])  
+    id_contrato = SelectField('Contrato', coerce=int, validators=[DataRequired()])
+    id_empleado = SelectMultipleField('Empleado', coerce=int, validators=[DataRequired()])
+    fecha = DateField('Fecha', validators=[DataRequired()])
+    boolean_asistencia = SelectField('¿Asistencia?', validators=[DataRequired()], choices=[("si", 'Si'), ("no", 'No')])
+    notas = StringField('Notas')   
     submit = SubmitField('Enviar')
