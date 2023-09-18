@@ -24,7 +24,17 @@
       {{ form.notas.label(class="form-label") }} {{ form.notas(class="form-control") }}<br>
     </div>
     {{ form.submit(class="btn btn-primary") }}
-    {{ form.errors }}
+    {% if form.errors %}
+      <div class="alert alert-danger mt-2">
+        <ul>
+          {% for field, errors in form.errors.items() %}
+            {% for error in errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
   </form>
 </div>
 {% endblock %}
